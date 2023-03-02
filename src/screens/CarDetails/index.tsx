@@ -3,6 +3,7 @@ import React from "react";
 import { AccessoryCar } from "../../components/AccessoryCar";
 import { BackButton } from "../../components/BackButton";
 import { ImageSlider } from "../../components/ImageSlider";
+import { Button } from "../../components/Button";
 
 import SpeedSvg from "../../assets/speed.svg";
 import AccelerationSvg from "../../assets/acceleration.svg";
@@ -25,6 +26,7 @@ import {
   Price,
   About,
   AccessoryContainer,
+  Footer,
 } from "./style";
 
 export function CarDetails() {
@@ -65,6 +67,9 @@ export function CarDetails() {
           para quem gosta de acelerar.
         </About>
       </Content>
+      <Footer>
+        <Button title="Escolher período do aluguel" />
+      </Footer>
     </Container>
   );
 }
