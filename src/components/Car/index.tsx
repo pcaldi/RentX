@@ -17,6 +17,7 @@ import {
 
 import EnergySvg from "../../assets/energy.svg";
 import { RFValue } from "react-native-responsive-fontsize";
+import { RectButtonProps } from "react-native-gesture-handler";
 
 type CarProps = {
   brand: string;
@@ -27,14 +28,14 @@ type CarProps = {
   };
   thumbnail: string;
 };
-type DataCarProps = {
+type DataCarProps = RectButtonProps & {
   data: CarProps;
 };
 
-export function Car({ data }: DataCarProps) {
+export function Car({ data, ...rest }: DataCarProps) {
   const theme = useTheme();
   return (
-    <Container>
+    <Container {...rest}>
       <Details>
         <Brand>{data.brand}</Brand>
         <Name>{data.name}</Name>
