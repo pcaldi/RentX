@@ -18,21 +18,15 @@ import {
 import EnergySvg from "../../assets/energy.svg";
 import { RFValue } from "react-native-responsive-fontsize";
 import { RectButtonProps } from "react-native-gesture-handler";
+import { CarDTO } from "../../dtos/CarDto";
+import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
 
-type CarProps = {
-  brand: string;
-  name: string;
-  rent: {
-    period: string;
-    price: number;
-  };
-  thumbnail: string;
-};
 type DataCarProps = RectButtonProps & {
-  data: CarProps;
+  data: CarDTO;
 };
 
 export function Car({ data, ...rest }: DataCarProps) {
+  const MotorIcon = getAccessoryIcon(data.fuel_type);
   const theme = useTheme();
   return (
     <Container {...rest}>
@@ -45,11 +39,7 @@ export function Car({ data, ...rest }: DataCarProps) {
             <Price>{`R$ ${data.rent.price}`}</Price>
           </Rent>
           <Type>
-            <EnergySvg
-              width={RFValue(20)}
-              height={RFValue(20)}
-              color={theme.colors.text_detail}
-            />
+            <MotorIcon />
           </Type>
         </About>
       </Details>
