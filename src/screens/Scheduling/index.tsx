@@ -28,6 +28,9 @@ export function Scheduling() {
   function handleConfirmRent() {
     navigation.navigate("SchedulingDetails");
   }
+  function handleBack() {
+    navigation.goBack();
+  }
   return (
     <Container>
       <StatusBar
@@ -37,7 +40,7 @@ export function Scheduling() {
       />
       <Header>
         <BackButton
-          onPress={() => {}}
+          onPress={handleBack}
           color={theme.colors.background_secondary}
         />
         <Title>
