@@ -15,8 +15,6 @@ import {
   CarImage,
 } from "./styles";
 
-import EnergySvg from "../../assets/energy.svg";
-import { RFValue } from "react-native-responsive-fontsize";
 import { RectButtonProps } from "react-native-gesture-handler";
 import { CarDTO } from "../../dtos/CarDto";
 import { getAccessoryIcon } from "../../utils/getAccessoryIcon";

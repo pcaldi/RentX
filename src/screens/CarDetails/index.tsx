@@ -36,7 +36,7 @@ export function CarDetails() {
   const { car } = routes.params as ParamsProps;
 
   function handleConfirmRental() {
-    navigation.navigate("Scheduling");
+    navigation.navigate("Scheduling", { car });
   }
   function handleBack() {
     navigation.goBack();
@@ -63,6 +63,7 @@ export function CarDetails() {
         <AccessoryContainer>
           {car.accessories.map((accessory) => (
             <AccessoryCar
+              key={accessory.type}
               name={accessory.name}
               icon={getAccessoryIcon(accessory.type)}
             />
