@@ -25,6 +25,7 @@ import {
   AccessoryContainer,
   Footer,
 } from "./style";
+import { StatusBar } from "react-native";
 
 type ParamsProps = {
   car: CarDTO;
@@ -43,6 +44,11 @@ export function CarDetails() {
   }
   return (
     <Container>
+      <StatusBar
+        barStyle="dark-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <Header>
         <BackButton onPress={handleBack} />
       </Header>
