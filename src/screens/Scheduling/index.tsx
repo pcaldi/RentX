@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTheme } from "styled-components";
-import { Alert, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import format from "date-fns/format";
 
@@ -56,14 +56,10 @@ export function Scheduling() {
   const { car } = routes.params as ParamsProps;
 
   function handleConfirmRent() {
-    if (!rentalPeriod.startFormatted || !rentalPeriod.endFormatted) {
-      Alert.alert("Selecione a data para confirmar");
-    } else {
-      navigation.navigate("SchedulingDetails", {
-        car,
-        dates: Object.keys(markedDates),
-      });
-    }
+    navigation.navigate("SchedulingDetails", {
+      car,
+      dates: Object.keys(markedDates),
+    });
   }
 
   function handleBack() {
@@ -131,7 +127,11 @@ export function Scheduling() {
         <Calendar markedDates={markedDates} onDayPress={handleChangeDate} />
       </Content>
       <Footer>
-        <Button title="Confirmar" onPress={handleConfirmRent} />
+        <Button
+          title="Confirmar"
+          onPress={handleConfirmRent}
+          enable={!!rentalPeriod.startFormatted}
+        />
       </Footer>
     </Container>
   );
