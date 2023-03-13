@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "styled-components";
 import { AntDesign } from "@expo/vector-icons";
 import { Car } from "../../components/Car";
-import { Load } from "../../components/Load";
+import { LoadAnimated } from "../../components/LoadAnimated";
 
 import {
   Container,
@@ -72,7 +72,7 @@ export function MyCars() {
         <SubTitle>Conforto, segurança e praticidade.</SubTitle>
       </Header>
       {loading ? (
-        <Load />
+        <LoadAnimated />
       ) : (
         <Content>
           <Appointments>
@@ -81,7 +81,7 @@ export function MyCars() {
           </Appointments>
           <FlatList
             data={cars}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => String(item.id)}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <CarWrapper>
