@@ -35,7 +35,9 @@ O RentX é um aplicativo de locação de automóveis.
 ## 🎉 Demo
 
 
-
+<div align="center" >
+   <img height="600" src="./.github/rentx.gif"/>
+</div>
 
 
 ## :rocket: Rodando o projeto
