@@ -54,13 +54,13 @@ export function SignIn() {
             <Button
               title="Login"
               onPress={() => {}}
-              enable={false}
+              enabled={false}
               loading={false}
             />
             <Button
               title="Criar conta gratuita"
               onPress={() => {}}
-              enable={false}
+              enabled={false}
               loading={false}
               color={theme.colors.background_secondary}
               light
