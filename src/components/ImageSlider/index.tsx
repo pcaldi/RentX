@@ -1,13 +1,9 @@
 import React, { useState, useRef } from "react";
 import { FlatList, ViewToken } from "react-native";
 
-import {
-  Container,
-  ImageIndexes,
-  ImageIndex,
-  CarImageWrapper,
-  CarImage,
-} from "./styles";
+import { Bullet } from "../Bullet";
+
+import { Container, ImageIndexes, CarImageWrapper, CarImage } from "./styles";
 
 type CarImageProps = {
   imageUrl: string[];
@@ -19,24 +15,28 @@ type ChangedImageProps = {
 };
 
 export function ImageSlider({ imageUrl }: CarImageProps) {
-  const [indexImage, setIndexImage] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const indexChanged = useRef((info: ChangedImageProps) => {
-    const index = info.viewableItems[0].index;
-    setIndexImage(index);
+    const index = info.viewableItems[0].index ?? 0;
+    setImageIndex(index);
   });
 
   return (
     <Container>
       <ImageIndexes>
-        {imageUrl.map((_, index) => (
-          <ImageIndex active={index === indexImage} key={String(index)} />
-        ))}
+        {
+          // o map possui dois parâmetros, o item(o item em si que percorremos) e o index(a posição do item no array)
+          // ao usar o underline, eu oculto o primeiro parâmetro visto que não irei usa-lo
+          imageUrl.map((_, index) => (
+            <Bullet key={index} active={index === imageIndex} />
+          ))
+        }
       </ImageIndexes>
 
       <FlatList
         data={imageUrl}
-        keyExtractor={(item) => item}
+        keyExtractor={(key) => key}
         renderItem={({ item }) => (
           <CarImageWrapper>
             <CarImage source={{ uri: item }} resizeMode="contain" />
@@ -44,6 +44,7 @@ export function ImageSlider({ imageUrl }: CarImageProps) {
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
+        pagingEnabled
         onViewableItemsChanged={indexChanged.current}
       />
     </Container>
