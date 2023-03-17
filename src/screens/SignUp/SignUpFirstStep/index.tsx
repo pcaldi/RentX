@@ -22,12 +22,15 @@ import {
 } from "./styles";
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { useAuth } from "../../../hooks/auth";
 
 export function SignUpFirstStep() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [driverLicense, setDriverLicense] = useState("");
   const navigation = useNavigation();
+  const { user } = useAuth();
+  console.log("USUÁRIO AUTENTICADO =>", user);
 
   function handleBack() {
     navigation.navigate("SignIn");
