@@ -20,7 +20,7 @@ export function StackRoutes() {
       screenOptions={{
         headerShown: false, // Retira o header da tela
       }}
-      initialRouteName={"SignIn"} // Define qual screen inicial.
+      initialRouteName={"Home"} // Define qual screen inicial.
     >
       <Screen name="SignIn" component={SignIn} />
       <Screen name="SignUpFirstStep" component={SignUpFirstStep} />

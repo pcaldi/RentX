@@ -6,7 +6,10 @@ import { Bullet } from "../Bullet";
 import { Container, ImageIndexes, CarImageWrapper, CarImage } from "./styles";
 
 type CarImageProps = {
-  imageUrl: string[];
+  imageUrl: {
+    id: string;
+    photo: string;
+  }[];
 };
 
 type ChangedImageProps = {
@@ -28,7 +31,7 @@ export function ImageSlider({ imageUrl }: CarImageProps) {
         {
           // o map possui dois parâmetros, o item(o item em si que percorremos) e o index(a posição do item no array)
           // ao usar o underline, eu oculto o primeiro parâmetro visto que não irei usa-lo
-          imageUrl.map((_, index) => (
+          imageUrl.map((item, index) => (
             <Bullet key={index} active={index === imageIndex} />
           ))
         }
@@ -36,10 +39,10 @@ export function ImageSlider({ imageUrl }: CarImageProps) {
 
       <FlatList
         data={imageUrl}
-        keyExtractor={(key) => key}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <CarImageWrapper>
-            <CarImage source={{ uri: item }} resizeMode="contain" />
+            <CarImage source={{ uri: item.photo }} resizeMode="contain" />
           </CarImageWrapper>
         )}
         horizontal
