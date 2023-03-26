@@ -1,6 +1,10 @@
 import React from "react";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { RectButtonProps } from "react-native-gesture-handler";
 
-import { useTheme } from "styled-components";
+import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
+
+import { Car as ModelCar } from "../../database/model/Car";
 
 import {
   Container,
@@ -15,17 +19,14 @@ import {
   CarImage,
 } from "./styles";
 
-import { RectButtonProps } from "react-native-gesture-handler";
-import { CarDTO } from "../../dtos/CarDto";
-import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
-
 type DataCarProps = RectButtonProps & {
-  data: CarDTO;
+  data: ModelCar;
 };
 
 export function Car({ data, ...rest }: DataCarProps) {
+  const netInfo = useNetInfo();
   const MotorIcon = getAccessoryIcon(data.fuel_type);
-  const theme = useTheme();
+
   return (
     <Container {...rest}>
       <Details>
@@ -34,7 +35,9 @@ export function Car({ data, ...rest }: DataCarProps) {
         <About>
           <Rent>
             <Period>{data.period}</Period>
-            <Price>{`R$ ${data.price}`}</Price>
+            <Price>{`R$ ${
+              netInfo.isConnected === true ? data.price : ". . ."
+            }`}</Price>
           </Rent>
           <Type>
             <MotorIcon />
