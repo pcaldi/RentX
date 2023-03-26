@@ -4,17 +4,17 @@ import { Feather } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components";
 import { format } from "date-fns";
-import { Alert } from "react-native";
+import { Alert, StatusBar } from "react-native";
 
 import { getPlatformDate } from "../../utils/getPlatformDate";
 import { CarDTO } from "../../dtos/CarDto";
+import { api } from "../../services/api";
 
 import { AccessoryCar } from "../../components/AccessoryCar";
 import { BackButton } from "../../components/BackButton";
 import { ImageSlider } from "../../components/ImageSlider";
 import { Button } from "../../components/Button";
 import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
-import { api } from "../../services/api";
 
 import {
   Container,
@@ -41,6 +41,7 @@ import {
   RentalPriceQuota,
   RentalPriceTotal,
 } from "./style";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 type ParamsProps = {
   car: CarDTO;
@@ -53,6 +54,8 @@ type RentalPeriodProps = {
 };
 
 export function SchedulingDetails() {
+  const [carUpdated, setCarUpdated] = useState<CarDTO>({} as CarDTO);
+  const netInfo = useNetInfo();
   const [loading, setLoading] = useState(false);
   const [rentalPeriod, setRentalPeriod] = useState<RentalPeriodProps>(
     {} as RentalPeriodProps
@@ -66,26 +69,14 @@ export function SchedulingDetails() {
 
   async function handleConfirmRent() {
     setLoading(true);
-    const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`);
-    const unavailable_dates = [
-      ...schedulesByCar.data.unavailable_dates,
-      ...dates,
-    ];
-    await api.post("/schedules_byuser", {
-      user_id: 2,
-      car,
-      startDate: format(getPlatformDate(new Date(dates[0])), "dd/MM/yyyy"),
-
-      endDate: format(
-        getPlatformDate(new Date(dates[dates.length - 1])),
-        "dd/MM/yyyy"
-      ),
-    });
 
     await api
-      .put(`/schedules_bycars/${car.id}`, {
-        id: car.id,
-        unavailable_dates,
+      .post("/rentals", {
+        user_id: 1,
+        car_id: car.id,
+        start_date: new Date(dates[0]),
+        end_date: new Date(dates[dates.length - 1]),
+        total: rentalTotal,
       })
       .then(() =>
         navigation.navigate("Confirmation", {
@@ -115,13 +106,34 @@ export function SchedulingDetails() {
     });
   }, []);
 
+  useEffect(() => {
+    async function fetchCarUpdated() {
+      const response = await api.get(`/cars/${car.id}`);
+      setCarUpdated(response.data);
+    }
+    if (netInfo.isConnected === true) {
+      fetchCarUpdated();
+    }
+  }, [netInfo.isConnected]);
+
   return (
     <Container>
+      <StatusBar
+        barStyle="dark-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <Header>
         <BackButton onPress={handleBack} />
       </Header>
       <CarImage>
-        <ImageSlider imageUrl={car.photos} />
+        <ImageSlider
+          imageUrl={
+            !!carUpdated.photos
+              ? carUpdated.photos
+              : [{ id: car.thumbnail, photo: car.thumbnail }]
+          }
+        />
       </CarImage>
       <Content>
         <Details>
@@ -134,15 +146,17 @@ export function SchedulingDetails() {
             <Price>R$ {car.price}</Price>
           </Rent>
         </Details>
-        <AccessoryContainer>
-          {car.accessories.map((accessory) => (
-            <AccessoryCar
-              key={accessory.type}
-              name={accessory.name}
-              icon={getAccessoryIcon(accessory.type)}
-            />
-          ))}
-        </AccessoryContainer>
+        {carUpdated.accessories && (
+          <AccessoryContainer>
+            {carUpdated.accessories.map((accessory) => (
+              <AccessoryCar
+                key={accessory.type}
+                name={accessory.name}
+                icon={getAccessoryIcon(accessory.type)}
+              />
+            ))}
+          </AccessoryContainer>
+        )}
         <RentalPeriod>
           <CalendarIcon>
             <Feather
