@@ -28,6 +28,9 @@ type SignInCredentials = {
 type AuthContextData = {
   user: UserProps;
   signIn: (credentials: SignInCredentials) => Promise<void>;
+  signOut: () => Promise<void>;
+  updatedUser: (user: UserProps) => Promise<void>;
+  loading: boolean;
 };
 
 type AuthProviderProps = {
@@ -39,6 +42,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 // AuthProvider vai receber um filho, no caso as rotas da aplicação.
 function AuthProvider({ children }: AuthProviderProps) {
   const [data, setData] = useState<UserProps>({} as UserProps);
+  const [loading, setLoading] = useState(true);
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
@@ -65,6 +69,34 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function signOut() {
+    try {
+      const userCollection = database.get<ModelUser>("users");
+      await database.action(async () => {
+        const userSelected = userCollection.find(data.id);
+        (await userSelected).destroyPermanently();
+      });
+      setData({} as UserProps);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async function updatedUser(user: UserProps) {
+    try {
+      const userCollection = database.get<ModelUser>("users");
+      await database.action(async () => {
+        const userSelected = await userCollection.find(user.id);
+        await userSelected.update((userData) => {
+          userData.name = user.name;
+          userData.driver_license = user.driver_license;
+          userData.avatar = user.avatar;
+        });
+        setData(user);
+      });
+    } catch (error) {}
+  }
+
   useEffect(() => {
     async function loadUserData() {
       const userCollection = await database.get<ModelUser>("users");
@@ -76,6 +108,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           "Authorization"
         ] = `Bearer ${userData.token}`;
         setData(userData);
+        setLoading(false);
       }
     }
     loadUserData();
@@ -85,6 +118,9 @@ function AuthProvider({ children }: AuthProviderProps) {
       value={{
         user: data,
         signIn,
+        signOut,
+        updatedUser,
+        loading,
       }}
     >
       {children}
